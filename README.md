@@ -36,3 +36,9 @@ Check out my other courses on [LinkedIn Learning](https://www.linkedin.com/learn
 
 [lil-course-url]: https://www.linkedin.com/learning/spring-code-challenges
 [lil-thumbnail-url]: https://cdn.lynda.com/course/3161306/3161306-1645727212219-16x9.jpg
+
+
+## Additional Challenges
+* Use Spring Security to add user and admin authentication and authorization.
+* Use Spring Security to add a login and logout page.
+* Use Spring Security to add Webflux Security
