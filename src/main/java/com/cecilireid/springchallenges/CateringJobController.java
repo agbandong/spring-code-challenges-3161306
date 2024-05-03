@@ -37,8 +37,15 @@ public class CateringJobController {
         }
     }
 
-    public List<CateringJob> getCateringJobsByStatus(Status status) {
-        return null;
+    @GetMapping("/findByStatus")
+    @ResponseBody
+    public List<CateringJob> getCateringJobsByStatus(@RequestParam String status) {
+        try{
+            return cateringJobRepository.findByStatus(Status.valueOf(status.toUpperCase()));
+        }
+        catch (IllegalArgumentException e){
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+        }
     }
 
     public CateringJob createCateringJob(CateringJob job) {
