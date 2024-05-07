@@ -75,13 +75,28 @@ public class CateringJobController {
     }
 
     @PatchMapping("/{id}")
+    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public CateringJob patchCateringJob(Long id, JsonNode json) {
-        if (!cateringJobRepository.existsById(id)) {
+    public CateringJob patchCateringJob(@RequestBody JsonPatch json, @RequestParam Long id) {
+        try{CateringJob cateringJob =
+                cateringJobRepository.findById(id).orElseThrow();
+            CateringJob cateringJobPatched = applyPatchToJob(json, cateringJob);
+            return cateringJobRepository.save(cateringJobPatched);
+        }
+        catch (JsonPatchException | JsonProcessingException e) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);}
+        catch (NoSuchElementException e){
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
         }
         CateringJob cateringJob = this.cateringJobRepository.findById(id).get();
         return null;
+    }
+
+    private CateringJob applyPatchToJob(
+            JsonPatch patch, CateringJob targetCateringJob) throws JsonPatchException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode patched = patch.apply(objectMapper.convertValue(targetCateringJob, JsonNode.class));
+        return objectMapper.treeToValue(patched, CateringJob.class);
     }
 
     public Mono<String> getSurpriseImage() {
