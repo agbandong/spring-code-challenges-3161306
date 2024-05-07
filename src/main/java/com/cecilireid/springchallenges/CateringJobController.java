@@ -65,24 +65,28 @@ public class CateringJobController {
     }
 
     @PutMapping("/{id}")
+    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public CateringJob updateCateringJob(@RequestBody CateringJob cateringJob, @RequestParam Long id) {
+    public CateringJob updateCateringJob(@RequestBody CateringJob cateringJob, @PathVariable Long id) {
         if (!cateringJobRepository.existsById(id)) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
         }
         if(cateringJob.getId() == null){
             cateringJob.setId(id);
         }
-        if (id != cateringJob.getId()){
+        if (!id.equals(cateringJob.getId())){
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
         }
-        return this.cateringJobRepository.save(cateringJob);
+        if(cateringJob.getStatus() == null){
+            cateringJob.setStatus(Status.valueOf("NOT_STARTED"));
+        }
+        return cateringJobRepository.save(cateringJob);
     }
 
     @PatchMapping("/{id}")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public CateringJob patchCateringJob(@RequestBody JsonPatch json, @RequestParam Long id) {
+    public CateringJob patchCateringJob(@RequestBody JsonPatch json, @PathVariable Long id) {
         try{CateringJob cateringJob =
                 cateringJobRepository.findById(id).orElseThrow();
             CateringJob cateringJobPatched = applyPatchToJob(json, cateringJob);
