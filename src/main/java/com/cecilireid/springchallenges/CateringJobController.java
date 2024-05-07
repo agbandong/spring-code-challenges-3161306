@@ -97,8 +97,6 @@ public class CateringJobController {
         catch (NoSuchElementException e){
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
         }
-        CateringJob cateringJob = this.cateringJobRepository.findById(id).get();
-        return null;
     }
 
     private CateringJob applyPatchToJob(
