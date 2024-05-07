@@ -68,6 +68,16 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+		<dependency>
+			<groupId>com.github.java-json-tools</groupId>
+			<artifactId>json-patch</artifactId>
+			<version>RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>RELEASE</version>
+		</dependency>
     </dependencies>
 
 	<build>
