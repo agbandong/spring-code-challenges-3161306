@@ -83,10 +83,13 @@ public class CateringJobController {
     @ResponseStatus(HttpStatus.OK)
     public CateringJob patchCateringJob(@RequestBody Map<String, Object> fields, @PathVariable Long id) {
         if(fields.get(id) != null){
-            if(Long.parseLong(fields.get(id).toString()) == id){
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+            if(fields.get(id) instanceof Long){
+                if(Long.parseLong(fields.get(id).toString()) == id){
+                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+                }
             }
         }
+
         if (!cateringJobRepository.existsById(id)) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
         }
