@@ -1,18 +1,15 @@
 package com.cecilireid.springchallenges;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.lang.reflect.Field;
+import java.util.*;
 
 
 @RestController
@@ -85,24 +82,31 @@ public class CateringJobController {
     @PatchMapping("/{id}")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public CateringJob patchCateringJob(@RequestBody JsonPatch json, @PathVariable Long id) {
-        try{CateringJob cateringJob =
-                cateringJobRepository.findById(id).orElseThrow();
-            CateringJob cateringJobPatched = applyPatchToJob(json, cateringJob);
-            return cateringJobRepository.save(cateringJobPatched);
+    public CateringJob patchCateringJob(@RequestBody Map<String, Object> fields, @PathVariable Long id) {
+        if(fields.get(id) != null){
+            if(Long.parseLong(fields.get(id).toString()) == id){
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+            }
         }
-        catch (JsonPatchException | JsonProcessingException e) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);}
-        catch (NoSuchElementException e){
+        if (!cateringJobRepository.existsById(id)) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
         }
+        CateringJob cateringJob = cateringJobRepository.findById(id).get();
+        fields.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(CateringJob.class, key);
+            try{field.setAccessible(true);
+                ReflectionUtils.setField(field, cateringJob, value);
+            }
+            catch (NullPointerException|IllegalArgumentException e){
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+            }
+
+        });
+        return cateringJobRepository.save(cateringJob);
     }
 
-    private CateringJob applyPatchToJob(
-            JsonPatch patch, CateringJob targetCateringJob) throws JsonPatchException, JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode patched = patch.apply(objectMapper.convertValue(targetCateringJob, JsonNode.class));
-        return objectMapper.treeToValue(patched, CateringJob.class);
+    private CateringJob applyPatchToJob(CateringJob toPatch, CateringJob cateringJob) {
+        return null;
     }
 
     public Mono<String> getSurpriseImage() {
