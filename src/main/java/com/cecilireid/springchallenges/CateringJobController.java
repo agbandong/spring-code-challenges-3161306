@@ -1,6 +1,5 @@
 package com.cecilireid.springchallenges;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -103,10 +102,6 @@ public class CateringJobController {
 
         });
         return cateringJobRepository.save(cateringJob);
-    }
-
-    private CateringJob applyPatchToJob(CateringJob toPatch, CateringJob cateringJob) {
-        return null;
     }
 
     public Mono<String> getSurpriseImage() {
