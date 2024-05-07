@@ -51,12 +51,13 @@ public class CateringJobController {
     }
 
     @PostMapping
+    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public CateringJob createCateringJob(@RequestBody CateringJob job) {
-        if(job.getStatus() == null){
-            job.setStatus(Status.valueOf("NOT_STARTED"));
+    public CateringJob createCateringJob(@RequestBody CateringJob cateringJob) {
+        if(cateringJob.getStatus() == null){
+            cateringJob.setStatus(Status.valueOf("NOT_STARTED"));
         }
-        return this.cateringJobRepository.save(job);
+        return cateringJobRepository.save(cateringJob);
     }
 
     @PutMapping("/{id}")
