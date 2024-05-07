@@ -48,8 +48,13 @@ public class CateringJobController {
         }
     }
 
-    public CateringJob createCateringJob(CateringJob job) {
-        return null;
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public CateringJob createCateringJob(@RequestBody CateringJob job) {
+        if(job.getStatus() == null){
+            job.setStatus(Status.valueOf("NOT_STARTED"));
+        }
+        return this.cateringJobRepository.save(job);
     }
 
     public CateringJob updateCateringJob(CateringJob cateringJob, Long id) {
