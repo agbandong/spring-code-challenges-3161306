@@ -1,6 +1,7 @@
 package com.cecilireid.springchallenges;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -8,6 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @RestController
@@ -57,11 +59,28 @@ public class CateringJobController {
         return this.cateringJobRepository.save(job);
     }
 
-    public CateringJob updateCateringJob(CateringJob cateringJob, Long id) {
-        return null;
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public CateringJob updateCateringJob(@RequestBody CateringJob cateringJob, @RequestParam Long id) {
+        if (!cateringJobRepository.existsById(id)) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+        }
+        if(cateringJob.getId() == null){
+            cateringJob.setId(id);
+        }
+        if (id != cateringJob.getId()){
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+        }
+        return this.cateringJobRepository.save(cateringJob);
     }
 
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public CateringJob patchCateringJob(Long id, JsonNode json) {
+        if (!cateringJobRepository.existsById(id)) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+        }
+        CateringJob cateringJob = this.cateringJobRepository.findById(id).get();
         return null;
     }
 
