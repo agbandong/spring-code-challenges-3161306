@@ -13,7 +13,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("cateringJobs")
-public class CateringJobController {
+public class CateringJobController extends WebExceptions{
     private static final String IMAGE_API = "https://foodish-api.herokuapp.com";
     private final CateringJobRepository cateringJobRepository;
     WebClient client;
