@@ -10,16 +10,18 @@ import reactor.core.publisher.Mono;
 import java.lang.reflect.Field;
 import java.util.*;
 
-
+//TODO: See if WebExceptions really need to be extended
 @RestController
 @RequestMapping("cateringJobs")
-public class CateringJobController extends WebExceptions{
+public class CateringJobController{
+    //TODO:Image API not working
     private static final String IMAGE_API = "https://foodish-api.herokuapp.com";
     private final CateringJobRepository cateringJobRepository;
     WebClient client;
 
     public CateringJobController(CateringJobRepository cateringJobRepository, WebClient.Builder webClientBuilder) {
         this.cateringJobRepository = cateringJobRepository;
+        client = webClientBuilder.baseUrl(IMAGE_API).build();
     }
 
     @GetMapping
@@ -107,7 +109,8 @@ public class CateringJobController extends WebExceptions{
         return cateringJobRepository.save(cateringJob);
     }
 
+    @GetMapping("/surpriseMe")
     public Mono<String> getSurpriseImage() {
-        return null;
+        return client.get().uri("/api").retrieve().bodyToMono(String.class);
     }
 }
