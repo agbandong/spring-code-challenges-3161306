@@ -68,6 +68,16 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>RELEASE</version>
+		</dependency>
     </dependencies>
 
 	<build>
